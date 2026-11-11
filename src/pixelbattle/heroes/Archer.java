@@ -27,6 +27,8 @@ public class Archer extends Hero {
         //   (лічильник — поле всередині анонімного класу; знадобиться вкладений цикл).
     }
 
-    // TODO 5: пасивка «Ухилення» — перевизначте modifyIncomingDamage:
-    //   з імовірністю 25% (chance(25)) шкода дорівнює 0, інакше — без змін.
+    @Override
+    protected int modifyIncomingDamage(int damage) {
+        return chance(25) ? 0 : damage;
+    }
 }
