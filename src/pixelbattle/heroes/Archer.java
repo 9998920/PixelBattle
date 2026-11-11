@@ -4,6 +4,8 @@ import pixelbattle.core.Hero;
 import pixelbattle.core.Skill;
 import pixelbattle.core.Target;
 import pixelbattle.engine.Sprite;
+import pixelbattle.core.Fighter;
+import pixelbattle.core.Ultimate;
 
 /** Лучниця — швидка й спритна. */
 public class Archer extends Hero {
@@ -21,10 +23,23 @@ public class Archer extends Hero {
             return user.getName() + " випускає дві стріли, завдаючи загалом " + (dmg1 + dmg2) + " шкоди!";
         }));
 
-        // TODO 9: ультимейт «Злива стріл» — АНОНІМНИЙ КЛАС з полем-лічильником:
-        //   кожен живий ворог отримує N стріл по random(4, 8) шкоди,
-        //   де N = 3 при першому використанні, 4 — при другому, 5 — при третьому...
-        //   (лічильник — поле всередині анонімного класу; знадобиться вкладений цикл).
+        setUltimate(new Ultimate() {
+            private int arrowCount = 3;
+            @Override public String getName() { return "Злива стріл"; }
+            @Override public String getDescription() { return "Кожен живий ворог отримує стріли по 4-8 шкоди. Кількість зростає."; }
+            @Override public String activate(Fighter user, Fighter[] allies, Fighter[] enemies) {
+                int totalDamage = 0;
+                for (Fighter e : enemies) {
+                    if (e.isAlive()) {
+                        for (int i = 0; i < arrowCount; i++) {
+                            if (e.isAlive()) totalDamage += e.takeDamage(user.random(4, 8));
+                        }
+                    }
+                }
+                arrowCount++;
+                return user.getName() + " випускає Зливу стріл, загальна шкода: " + totalDamage + "!";
+            }
+        });
     }
 
     @Override
